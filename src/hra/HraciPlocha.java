@@ -1,5 +1,6 @@
 package hra;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,8 +19,12 @@ public class HraciPlocha extends JPanel{
 	public static final int vyska = 800;
 	public static final int sirka = 600;
 	
+	public static final boolean DEBUG = true;
+	
 	//rychlost behu pozadi - doleva
 	public static final int rychlost = -2;
+	
+	private Hrac hrac;
 	
 	private BufferedImage imgPozadi;
 	private Timer casovacAnimace;
@@ -31,14 +36,27 @@ public class HraciPlocha extends JPanel{
 	public HraciPlocha(){
 		ZdrojObrazkuSoubor z = new ZdrojObrazkuSoubor();
 		z.naplnMapu();
+		
 		z.setZdroj(Obrazek.POZADI.getKlic());
 		
 		try {
 			imgPozadi = z.getObrazek();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
+		z.setZdroj(Obrazek.HRAC.getKlic());
+		BufferedImage imgHrac;
+		//hrac = new Hrac(null);
+		try {
+			imgHrac = z.getObrazek();
+			hrac = new Hrac(imgHrac);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
 		
 	}
 	
@@ -49,14 +67,19 @@ public class HraciPlocha extends JPanel{
 		g.drawImage(imgPozadi, posunPozadiX, 0, null); //nalepeni prvniho obrazku
 		g.drawImage(imgPozadi, posunPozadiX+imgPozadi.getWidth(), 0, null); //druhy obrazek za nej
 		
+		if(HraciPlocha.DEBUG){
+			g.setColor(Color.WHITE);
+			g.drawString("posunPozadiX = " + posunPozadiX, 0, 10);
+		}
 		
+		hrac.paint(g);
 		
 	}
 	
 	private void posun(){
 		if(!pauza && hraBezi){		//hra pobezi a nebude pauza
 			
-			
+			hrac.posun();
 			
 			//posun pozice pozadi hraci prochy (scroll)
 			posunPozadiX = posunPozadiX + HraciPlocha.rychlost;
@@ -86,7 +109,7 @@ public class HraciPlocha extends JPanel{
 			@Override
 			public void mousePressed(MouseEvent e){
 				if(e.getButton() == MouseEvent.BUTTON1){ //stisk leveho tlacitka
-					//TODO skok hrace
+					hrac.skok();
 				}
 				
 				if(e.getButton() == MouseEvent.BUTTON3){

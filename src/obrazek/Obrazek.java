@@ -4,10 +4,12 @@ import java.awt.Color;
 
 import hra.Hrac;
 import hra.HraciPlocha;
+import hra.Zed;
 
 public enum Obrazek {
 	HRAC("hrac", Hrac.sirka, Hrac.vyska, new Color(255,255,255)),
-	POZADI("pozadi", HraciPlocha.sirka*3, HraciPlocha.vyska, new Color(0,0,150));
+	POZADI("pozadi", HraciPlocha.sirka*3, HraciPlocha.vyska, new Color(0,0,150)),
+	ZED("zed", Zed.sirka, HraciPlocha.vyska, new Color(120,0,0));
 	
 	//pocet prvku
 	private static final int size = Obrazek.values().length;
