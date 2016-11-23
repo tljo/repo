@@ -16,8 +16,17 @@ import obrazek.Obrazek;
 import obrazek.ZdrojObrazkuSoubor;
 
 public class HraciPlocha extends JPanel{
+	private static final long serialVersionUID = 1L;
 	public static final int vyska = 800;
 	public static final int sirka = 600;
+
+	//aspon 3 zdi, aby se prvni stihla posunout za okraj
+	public static final int pocet_zdi = 4;
+	
+	private SeznamZdi seznamZdi;
+	
+	private Zed aktualniZed;
+	private Zed predchoziZed;
 	
 	public static final boolean DEBUG = true;
 	
@@ -57,7 +66,31 @@ public class HraciPlocha extends JPanel{
 		}
 		
 		
+		z.setZdroj(Obrazek.ZED.getKlic());
+		BufferedImage imgZed;
+		try {
+			imgZed = z.getObrazek();
+			Zed.setObrazek(imgZed);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
+		seznamZdi = new SeznamZdi();
+		
+	}
+	
+	private void vyrobZdi(int pocet){
+		Zed zed;
+		int vzdalenost = HraciPlocha.sirka;
+		
+		for(int i = 0; i < pocet; i++){
+			zed = new Zed(vzdalenost);
+			seznamZdi.add(zed);
+			vzdalenost = vzdalenost + (HraciPlocha.sirka/2);
+		}
+		
+		vzdalenost = vzdalenost - HraciPlocha.sirka - Zed.sirka;
+		Zed.setVzdalenostPosledniZdi(vzdalenost);
 	}
 	
 	//z JPanelu - pøekreslení panelu
@@ -72,12 +105,20 @@ public class HraciPlocha extends JPanel{
 			g.drawString("posunPozadiX = " + posunPozadiX, 0, 10);
 		}
 		
+		for(Zed zed: seznamZdi){
+			zed.paint(g);
+		}
+		
 		hrac.paint(g);
 		
 	}
 	
 	private void posun(){
 		if(!pauza && hraBezi){		//hra pobezi a nebude pauza
+			
+			for(Zed zed: seznamZdi){
+				zed.posun();
+			}
 			
 			hrac.posun();
 			
@@ -132,7 +173,7 @@ public class HraciPlocha extends JPanel{
 	}
 	
 	protected void pripravNovouHru(){
-		
+		vyrobZdi(pocet_zdi);
 	}
 	
 }
