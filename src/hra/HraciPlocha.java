@@ -36,7 +36,7 @@ public class HraciPlocha extends JPanel{
 	public static final boolean DEBUG = true;
 	
 	//rychlost behu pozadi - doleva
-	public static final int rychlost = -2;
+	public static final int rychlost = -100; //for fun
 	
 	private Hrac hrac;
 	
@@ -102,7 +102,7 @@ public class HraciPlocha extends JPanel{
 		
 		lbSkore = new JLabel("0");
 		lbSkore.setFont(font);
-		lbSkore.setForeground(Color.BLUE); //barva skore nahoøe
+		lbSkore.setForeground(Color.WHITE); //barva skore nahoøe
 		lbSkore.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		this.add(lbSkore, BorderLayout.NORTH);

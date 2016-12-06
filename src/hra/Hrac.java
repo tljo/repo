@@ -9,8 +9,8 @@ public class Hrac {
 	public static final int sirka = 40;
 	public static final int vyska = 33;
 	
-	private static final int koef_zrychleni = 1; //velikost skoku hrace
-	private static final int koef_rychlost = 2;  //rychlost padu hrace
+	private static final int koef_zrychleni = 1; //velikost skoku hrace 
+	private static final int koef_rychlost = 2;  //rychlost padu hrace 
 	
 	private BufferedImage img = null;
 	
