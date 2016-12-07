@@ -1,25 +1,72 @@
 package app;
 
+import java.awt.Color;
+import java.awt.Font;
+
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 import hra.HraciPlocha;
+import obrazek.ManazerObrazku;
+import obrazek.ZdrojObrazkuSoubor;
 
 public class FlappyFimHlavniApp extends JFrame{
-	private HraciPlocha hp;
+	private ManazerObrazku mo;
 
 	public FlappyFimHlavniApp(){
-		//TODO
+		mo = new ManazerObrazku(new ZdrojObrazkuSoubor());
 	}
 	
 	public void spust(){
-		hp = new HraciPlocha();
-		hp.pripravHraciPlochu();
+		class Vlakno extends SwingWorker<Object, Object>{
+			private JFrame vlastnik;
+			private JLabel lb;
+			private HraciPlocha hraciPlocha;
+			
+			public void setVlastnik(JFrame vlastnik) {
+				this.vlastnik = vlastnik;
+			}
+			
+			public void doBeforeExecute(){
+				lb = new JLabel("Loading, Please wait...");
+				lb.setFont(new Font("Arial", Font.BOLD, 42));
+				lb.setForeground(Color.RED);
+				lb.setHorizontalAlignment(SwingConstants.CENTER);
+				
+				vlastnik.add(lb);
+				lb.setVisible(true);
+				vlastnik.revalidate(); //revalidace komponent
+				vlastnik.repaint();
+			}
+			
+			@Override
+			protected Object doInBackground() throws Exception {  //na pozadí se naètou obrázky a pøipraví se plocha, když bude uživatel koukat na hlášku Loading...
+				mo.pripravObrazky();
+				hraciPlocha = new HraciPlocha(mo);
+				hraciPlocha.pripravHraciPlochu();
+				return null;
+			}
+
+			@Override
+			protected void done() {
+				super.done();
+				
+				vlastnik.remove(lb);
+				vlastnik.revalidate();
+				vlastnik.add(hraciPlocha);
+				hraciPlocha.setVisible(true);
+				vlastnik.revalidate();
+				vlastnik.repaint();
+			}
+		}
 		
-		getContentPane().add(hp, "Center");
-		hp.setVisible(true);
-		this.revalidate();
-		hp.repaint();
+		Vlakno v = new Vlakno(); //vytvoøení až po definici tøídy!
+		v.setVlastnik(this);
+		v.doBeforeExecute();
+		v.execute();           //vlákno se nastartuje a metody se provedou
 	}
 	
 	public void initGUI(){

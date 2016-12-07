@@ -17,6 +17,7 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import hra.Zed;
+import obrazek.ManazerObrazku;
 import obrazek.Obrazek;
 import obrazek.ZdrojObrazkuSoubor;
 
@@ -28,15 +29,10 @@ public class HraciPlocha extends JPanel{
 	//aspon 3 zdi, aby se prvni stihla posunout za okraj
 	public static final int pocet_zdi = 4;
 	
-	private SeznamZdi seznamZdi;
-	
-	private Zed aktualniZed;
-	private Zed predchoziZed;
-	
 	public static final boolean DEBUG = true;
 	
 	//rychlost behu pozadi - doleva
-	public static final int rychlost = -100; //for fun
+	public static final int rychlost = -5;
 	
 	private Hrac hrac;
 	
@@ -46,6 +42,10 @@ public class HraciPlocha extends JPanel{
 	private boolean hraBezi = false;
 	private int posunPozadiX = 0;
 	
+	private SeznamZdi seznamZdi;
+	private Zed aktualniZed;
+	private Zed predchoziZed;
+	
 	private int skore = 0;
 	private JLabel lbSkore;
 	private JLabel lbZprava;
@@ -53,44 +53,16 @@ public class HraciPlocha extends JPanel{
 	private Font zpravaFont;
 	
 	
-	public HraciPlocha(){
-		ZdrojObrazkuSoubor z = new ZdrojObrazkuSoubor();
-		z.naplnMapu();
-		
-		z.setZdroj(Obrazek.POZADI.getKlic());
-		
-		try {
-			imgPozadi = z.getObrazek();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		
-		z.setZdroj(Obrazek.HRAC.getKlic());
-		BufferedImage imgHrac;
-		//hrac = new Hrac(null);
-		try {
-			imgHrac = z.getObrazek();
-			hrac = new Hrac(imgHrac);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		
-		z.setZdroj(Obrazek.ZED.getKlic());
-		BufferedImage imgZed;
-		try {
-			imgZed = z.getObrazek();
-			Zed.setObrazek(imgZed);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public HraciPlocha(ManazerObrazku mo){
+		imgPozadi = mo.getObrazek(Obrazek.POZADI);
+		hrac = new Hrac(mo.getObrazek(Obrazek.HRAC));
+		Zed.setObrazek(mo.getObrazek(Obrazek.ZED));
 		
 		seznamZdi = new SeznamZdi();
-		makeLabels();
+		vyrobLabely();
 	}
 	
-	private void makeLabels() {
+	private void vyrobLabely() {
 		font = new Font("Courier New", Font.BOLD, 40);
 		zpravaFont = new Font("Courier New", Font.BOLD, 20);
 		this.setLayout(new BorderLayout());
